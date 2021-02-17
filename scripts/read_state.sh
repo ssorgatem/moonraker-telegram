@@ -8,7 +8,8 @@ if [ "$bot_disable" = "0" ]; then
 python3 $DIR_STATE/scripts/bot.py "$token" "$port" "$DIR_STATE" &
 fi
 
-echo "time_msg=0" > $DIR_STATE/scripts/time_config.txt
+echo "time_msg=0" > /tmp/time_config.txt
+ln -sf /tmp/time_config.txt $DIR_STATE/scripts/time_config.txt
 echo "time_pause=0" >> $DIR_STATE/scripts/time_config.txt
 
 print_state="0"
@@ -17,7 +18,8 @@ pause="0"
 while true
 do
 
-curl -s -o $DIR_STATE/print_stats.txt http://127.0.0.1:$port/printer/objects/query?print_stats
+curl -s -o /tmp/print_stats.txt http://127.0.0.1:$port/printer/objects/query?print_stats
+ln -sf /tmp/print_stats.txt $DIR_STATE/print_stats.txt
 print_state_read=$(grep -oP '(?<="state": ")[^"]*' $DIR_STATE/print_stats.txt)
 
 	if [ "$print_state_read" = "printing" ]; then
@@ -51,8 +53,8 @@ print_state_read=$(grep -oP '(?<="state": ")[^"]*' $DIR_STATE/print_stats.txt)
             sed -i "s/time_pause=.*$/time_pause="1"/g" $DIR_STATE/scripts/time_config.txt
             sh $DIR_STATE/scripts/telegram.sh "3"
             fi
-        fi     
-    
+        fi
+
     elif [ "$print_state_read" = "error" ]; then
         if [ "$print_state" = "1" ]; then
             print_state="0"

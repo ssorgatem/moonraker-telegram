@@ -5,8 +5,10 @@ DIR_TEL="`cd $MYDIR_TEL/../; pwd`"
 
 . $DIR_TEL/telegram_config.sh
 
-curl -s -o $DIR_TEL/telegram_stats.txt http://127.0.0.1:$port/printer/objects/query?print_stats
-curl -s -o $DIR_TEL/display_status.txt http://127.0.0.1:$port/printer/objects/query?display_status
+curl -s -o /tmp/telegram_stats.txt http://127.0.0.1:$port/printer/objects/query?print_stats
+curl -s -o /tmp/display_status.txt http://127.0.0.1:$port/printer/objects/query?display_status
+ln -sf /tmp/telegram_stats.txt $DIR_TEL/telegram_stats.txt
+ln -sf /tmp/display_status.txt $DIR_TEL/display_status.txt
 
 print_filename=$(grep -oP '(?<="filename": ")[^"]*' $DIR_TEL/telegram_stats.txt)
 print_duration=$(grep -oP '(?<="print_duration": )[^,]*' $DIR_TEL/telegram_stats.txt)
